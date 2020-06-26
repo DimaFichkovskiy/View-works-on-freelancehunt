@@ -1,5 +1,6 @@
 import pandas as pd
 import requests
+import datetime
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
@@ -26,7 +27,10 @@ def write_csv(data):
 
 
 def get_page_data(html_base, base_url):
-    data = {'title': list(),
+    now = datetime.datetime.now()
+
+    data = {'date': list(),
+            'title': list(),
             'url': list()}
 
     total_pages = get_total_pages(html_base)
@@ -41,7 +45,9 @@ def get_page_data(html_base, base_url):
         for ad in ads:
             title = ad.find('a', class_='bigger visitable').text
             url = ad.find('a', class_='bigger visitable').get('href')
+            date = f"{now.day}-{now.month}-{now.year}"
 
+            data['date'].append(date)
             data['title'].append(title)
             data['url'].append(url)
 
