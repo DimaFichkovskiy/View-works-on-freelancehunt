@@ -4,7 +4,6 @@ import datetime
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
-
 ua = UserAgent()
 HEADERS = {'accept': '*/*', 'user-agent': ua.random}
 
@@ -43,9 +42,30 @@ def get_page_data(html_base, base_url):
         ads = soup.find('table', class_='table table-normal project-list').find_all('td', class_='left')
 
         for ad in ads:
-            title = ad.find('a', class_='bigger visitable').text
+            try:
+                title = ad.find('a', class_='bigger visitable').text
+            except AttributeError:
+                continue
             url = ad.find('a', class_='bigger visitable').get('href')
-            date = f"{now.day}-{now.month}-{now.year}"
+
+            #get day
+            day = ''
+            if now.day in range(1, 10):
+                day = '0' + str(now.day)
+            else:
+                day = str(now.day)
+
+            #get month
+            month = ''
+            if now.month in range(1, 10):
+                month = '0' + str(now.month)
+            else:
+                month = str(now.month)
+
+            # get year
+            year = str(now.year)
+
+            date = f'{day}-{month}-{year}'
 
             data['date'].append(date)
             data['title'].append(title)
