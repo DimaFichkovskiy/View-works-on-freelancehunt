@@ -3,6 +3,8 @@ import requests
 import datetime
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from database import DBDriver
+
 
 ua = UserAgent()
 HEADERS = {'accept': '*/*', 'user-agent': ua.random}
@@ -28,9 +30,11 @@ def write_csv(data):
 def get_page_data(html_base, base_url):
     now = datetime.datetime.now()
 
-    data = {'date': list(),
-            'title': list(),
-            'url': list()}
+    data = list()
+
+    # data = {'date': list(),
+    #         'title': list(),
+    #         'url': list()}
 
     total_pages = get_total_pages(html_base)
 
@@ -67,11 +71,19 @@ def get_page_data(html_base, base_url):
 
             date = f'{day}-{month}-{year}'
 
-            data['date'].append(date)
-            data['title'].append(title)
-            data['url'].append(url)
+            data.append({
+                'date': date,
+                'title': title,
+                'url': url
+            })
 
-    write_csv(data)
+            # data['date'].append(date)
+            # data['title'].append(title)
+            # data['url'].append(url)
+
+    # write_csv(data)
+
+    DBDriver.add_work(data)
 
 
 def main():
